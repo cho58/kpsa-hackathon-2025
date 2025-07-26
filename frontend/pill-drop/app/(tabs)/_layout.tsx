@@ -1,9 +1,9 @@
+import { Image } from 'expo-image';
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
 
 import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -30,21 +30,51 @@ export default function TabLayout() {
         name="index"
         options={{
           title: '홈',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={
+                focused
+                  ? require('@/assets/images/Icons/Bottom_nav/home_icon_A.png')
+                  : require('@/assets/images/Icons/Bottom_nav/home_icon_I.png')
+              }
+              style={{ width: 28, height: 28 }}
+              contentFit="contain"
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
           title: '수거함',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={
+                focused
+                  ? require('@/assets/images/Icons/Bottom_nav/point_icon_A.png')
+                  : require('@/assets/images/Icons/Bottom_nav/point_icon_I.png')
+              }
+              style={{ width: 28, height: 28 }}
+              contentFit="contain"
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="more"
         options={{
           title: '마이페이지',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={
+                focused
+                  ? require('@/assets/images/Icons/Bottom_nav/user_icon_A.png')
+                  : require('@/assets/images/Icons/Bottom_nav/user_icon_I.png')
+              }
+              style={{ width: 28, height: 28 }}
+              contentFit="contain"
+            />
+          ),
         }}
       />
     </Tabs>
