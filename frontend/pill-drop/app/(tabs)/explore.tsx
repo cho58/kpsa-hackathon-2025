@@ -1,9 +1,8 @@
-import React, { useState, useRef } from "react";
-import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import * as ExpoLocation from "expo-location";
+import React, { useRef, useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { WebView } from "react-native-webview";
-import { useNavigation } from "@react-navigation/native";
 import locationData from "../../assets/data/location.json";
-import * as Location from "expo-location";
 
 // 타입 정의
 type Location = {
@@ -25,10 +24,8 @@ const BUTTONS = [
 ];
 
 export default function KakaoMapScreen() {
-  const navigation = useNavigation();
   const [selected, setSelected] = useState<number>(0);
   const webViewRef = useRef<WebView>(null);
-  const [isWebViewReady, setWebViewReady] = useState(false);
 
   const [currentLocation, setCurrentLocation] = useState<{
     lat: number;
@@ -48,13 +45,13 @@ export default function KakaoMapScreen() {
   // 현위치 버튼 핸들러
   const handleCurrentLocationPress = async () => {
     // 1) 권한 요청
-    const { status } = await Location.requestForegroundPermissionsAsync();
+    const { status } = await ExpoLocation.requestForegroundPermissionsAsync();
     if (status !== "granted") {
       alert("위치 권한이 필요합니다");
       return;
     }
     // 2) 현재 위치 가져오기
-    const loc = await Location.getCurrentPositionAsync({});
+    const loc = await ExpoLocation.getCurrentPositionAsync({});
     const payload = {
       type: "currentLocation",
       lat: loc.coords.latitude,
