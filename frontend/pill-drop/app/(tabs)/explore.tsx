@@ -7,6 +7,7 @@ import {
   ScrollView,
 } from "react-native";
 import { WebView } from "react-native-webview";
+import { Image } from "expo-image";
 import locationData from "../../assets/data/location.json";
 import * as ExpoLocation from "expo-location";
 
@@ -16,6 +17,7 @@ type Location = {
   address: string;
   lat: number;
   lng: number;
+  category: string;
 };
 
 type LocationData = {
@@ -23,10 +25,7 @@ type LocationData = {
 };
 
 const BUTTONS = [
-<<<<<<< HEAD
-=======
   { label: "전체", keyword: null }, // 모든 데이터를 표시
->>>>>>> 414dc4c121da62049e391cb87d9f63837c1ac18c
   { label: "약국", keyword: "약국" },
   { label: "우체통", keyword: "우체통" },
   { label: "공공기관", keyword: "공공기관" },
@@ -34,15 +33,8 @@ const BUTTONS = [
 ];
 
 export default function KakaoMapScreen() {
-<<<<<<< HEAD
-  const navigation = useNavigation();
   const [selected, setSelected] = useState<number>(0);
   const webViewRef = useRef<WebView>(null);
-  const [isWebViewReady, setWebViewReady] = useState(false);
-=======
-  const [selected, setSelected] = useState<number>(0);
-  const webViewRef = useRef<WebView>(null);
->>>>>>> 414dc4c121da62049e391cb87d9f63837c1ac18c
 
   const [currentLocation, setCurrentLocation] = useState<{
     lat: number;
@@ -56,19 +48,30 @@ export default function KakaoMapScreen() {
     address: string;
     lat: number;
     lng: number;
+    category: string;
   } | null>(null);
   const [distance, setDistance] = useState<number>(0);
 
-<<<<<<< HEAD
-  // 현위치 버튼 핸들러
-  const handleCurrentLocationPress = async () => {
-    // 1) 권한 요청
-    const { status } = await Location.requestForegroundPermissionsAsync();
-=======
   const DETAIL_CARD_HEIGHT = 130;
   const DETAIL_CARD_BOTTOM = 20;
   const BUTTON_MARGIN = 10;
   const DEFAULT_BUTTON_BOTTOM = 60;
+
+  // 카테고리별 이미지 반환 함수
+  const getCategoryImage = (category: string) => {
+    switch (category) {
+      case "약국":
+        return require("@/assets/images/pharmacy/pharmacy.png");
+      case "우체통":
+        return require("@/assets/images/pharmacy/mailbox.png");
+      case "공공기관":
+        return require("@/assets/images/pharmacy/institution.png");
+      case "어린이집":
+        return require("@/assets/images/pharmacy/child.png");
+      default:
+        return require("@/assets/images/pharmacy/pharmacy.png");
+    }
+  };
 
   useEffect(() => {
     const all = Object.values(locationData).flat();
@@ -84,17 +87,12 @@ export default function KakaoMapScreen() {
   const handleCurrentLocationPress = async () => {
     // 1) 권한 요청
     const { status } = await ExpoLocation.requestForegroundPermissionsAsync();
->>>>>>> 414dc4c121da62049e391cb87d9f63837c1ac18c
     if (status !== "granted") {
       alert("위치 권한이 필요합니다");
       return;
     }
     // 2) 현재 위치 가져오기
-<<<<<<< HEAD
-    const loc = await Location.getCurrentPositionAsync({});
-=======
     const loc = await ExpoLocation.getCurrentPositionAsync({});
->>>>>>> 414dc4c121da62049e391cb87d9f63837c1ac18c
     const payload = {
       type: "currentLocation",
       lat: loc.coords.latitude,
@@ -104,14 +102,6 @@ export default function KakaoMapScreen() {
     webViewRef.current?.postMessage(JSON.stringify(payload));
   };
 
-<<<<<<< HEAD
-  const handleButtonPress = (keyword: string, idx: number) => {
-    setSelected(idx);
-    const locations = (locationData as LocationData)[keyword];
-    if (webViewRef.current) {
-      webViewRef.current.postMessage(JSON.stringify(locations));
-    }
-=======
   // handleButtonPress 수정
   const handleButtonPress = (keyword: string | null, idx: number) => {
     setSelected(idx);
@@ -127,19 +117,19 @@ export default function KakaoMapScreen() {
         payload: locations, // ← 마커 데이터
       })
     );
->>>>>>> 414dc4c121da62049e391cb87d9f63837c1ac18c
   };
 
   const onWebViewMessage = (e: any) => {
     try {
       const msg = JSON.parse(e.nativeEvent.data);
       if (msg.type === "markerClick") {
-        // markerClick payload: { type, name, address, lat, lng }
+        // markerClick payload: { type, name, address, lat, lng, category }
         setDetail({
           name: msg.name,
           address: msg.address,
           lat: msg.lat,
           lng: msg.lng,
+          category: msg.category,
         });
         // 거리 계산
         const d = calculateDistance(
@@ -195,68 +185,6 @@ export default function KakaoMapScreen() {
     </head>
     <body>
       <div id="map"></div>
-<<<<<<< HEAD
-      <script>
-        kakao.maps.load(function () {
-          var container = document.getElementById('map');
-          var options = {
-            center: new kakao.maps.LatLng(37.364049, 126.718033),
-            level: 3
-          };
-
-          // 메시지 수신 핸들러
-          function handleMessage(event) {
-            try {
-              const msg = JSON.parse(event.data);
-              if (msg.type === "currentLocation") {
-                const newCenter = new kakao.maps.LatLng(msg.lat, msg.lng);
-                map.setCenter(newCenter);
-              }
-              // ... (기존 markerClick, filter 메시지도 처리 가능)
-            } catch (e) {
-              console.error(e);
-            }
-          }
-
-          window.addEventListener("message", handleMessage);
-          document.addEventListener("message", handleMessage);
-
-          var map = new kakao.maps.Map(container, options);
-
-          // 마커 추가 함수
-          function addMarkers(locations) {
-            locations.forEach(location => {
-              var marker = new kakao.maps.Marker({
-                position: new kakao.maps.LatLng(location.lat, location.lng),
-                map: map
-              });
-
-              // 마커 클릭 이벤트
-              kakao.maps.event.addListener(marker, 'click', function() {
-                var payload = {
-                  type: "markerClick",
-                  name: location.name,
-                  address: location.address,
-                  lat: location.lat,
-                  lng: location.lng
-                };
-                window.ReactNativeWebView.postMessage(JSON.stringify(payload)); // React Native로 데이터 전달
-              });
-            });
-          }
-
-          // React Native에서 데이터 전달받기
-          document.addEventListener('message', function(event) {
-            var locations = JSON.parse(event.data);
-            if (locations.length > 0) {
-              map.setCenter(new kakao.maps.LatLng(locations[0].lat, locations[0].lng));
-              addMarkers(locations);
-            }
-          });
-        });
-      </script>
-    </body>
-=======
         <script>
           kakao.maps.load(function() {
             var map = new kakao.maps.Map(
@@ -283,7 +211,8 @@ export default function KakaoMapScreen() {
                     name: loc.name,
                     address: loc.address,
                     lat: loc.lat,
-                    lng: loc.lng
+                    lng: loc.lng,
+                    category: loc.category
                   }));
                 });
                 markers.push(marker);
@@ -316,14 +245,8 @@ export default function KakaoMapScreen() {
           });
         </script>
       </body>
->>>>>>> 414dc4c121da62049e391cb87d9f63837c1ac18c
     </html>
   `;
-
-  const DETAIL_CARD_HEIGHT = 130;
-  const DETAIL_CARD_BOTTOM = 20;
-  const BUTTON_MARGIN = 10;
-  const DEFAULT_BUTTON_BOTTOM = 60;
 
   return (
     <View style={styles.container}>
@@ -335,15 +258,11 @@ export default function KakaoMapScreen() {
 
       {/* 버튼 컨테이너 */}
       <View style={styles.buttonOverlay}>
-<<<<<<< HEAD
-        <View style={styles.buttonContainer}>
-=======
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.buttonContainer}
         >
->>>>>>> 414dc4c121da62049e391cb87d9f63837c1ac18c
           {BUTTONS.map((btn, idx) => (
             <TouchableOpacity
               key={btn.label}
@@ -360,17 +279,17 @@ export default function KakaoMapScreen() {
               </Text>
             </TouchableOpacity>
           ))}
-<<<<<<< HEAD
-        </View>
-=======
         </ScrollView>
->>>>>>> 414dc4c121da62049e391cb87d9f63837c1ac18c
       </View>
 
       {/* 디테일 카드 */}
       {detail && (
         <View style={styles.detailCard}>
-          <View style={styles.thumbPlaceholder} />
+          <Image 
+            source={getCategoryImage(detail.category)}
+            style={styles.thumbImage}
+            contentFit="contain"
+          />
           <View style={styles.detailInfo}>
             <Text style={styles.detailName}>{detail.name}</Text>
             <Text style={styles.detailDistance}>{distance.toFixed(2)}km</Text>
@@ -433,22 +352,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   buttonOverlay: {
-<<<<<<< HEAD
-    position: "absolute", // WebView 위에 겹치도록 설정
-    top: 130, // 헤더 아래로 배치
-    left: 0,
-    right: 0,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    backgroundColor: "transparent", // 배경을 투명하게 설정
-    zIndex: 10, // WebView 위에 표시되도록 설정
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "center", // 버튼을 중앙 정렬
-    alignItems: "center",
-    gap: 8,
-=======
     position: "absolute",
     top: 130, // 헤더 아래로 배치
     left: 0,
@@ -462,18 +365,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 12,
     gap: 5, // 버튼 간격
->>>>>>> 414dc4c121da62049e391cb87d9f63837c1ac18c
   },
   button: {
     backgroundColor: "#fff",
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 7,
-<<<<<<< HEAD
-    marginRight: 2,
-=======
     marginRight: 8,
->>>>>>> 414dc4c121da62049e391cb87d9f63837c1ac18c
     borderWidth: 1,
     borderColor: "#ddd",
     elevation: 2,
@@ -526,12 +424,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
   },
-  thumbPlaceholder: {
+  thumbImage: {
     width: 60,
     height: 60,
-    backgroundColor: "#eee",
+    backgroundColor: "#f0f0f0",
     borderRadius: 8,
     marginRight: 12,
+    alignSelf: "center",
   },
   detailInfo: {
     flex: 1,
