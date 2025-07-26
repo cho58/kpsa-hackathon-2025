@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const User = require('./models/User')
 const StoreItem = require('./models/StoreItem')
+const News = require('./models/News')
 
 const app = express()
 const port = 3000
@@ -404,6 +405,253 @@ app.post('/store-items/:id/purchase', async (req, res) => {
         remainingPoints: user.point,
         remainingStock: storeItem.stock
       }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+})
+
+// ========== News CRUD API ==========
+
+// Get all news
+app.get('/news', async (req, res) => {
+  try {
+    const { category, isPublished, page = 1, limit = 10, search } = req.query;
+    const filter = {};
+    
+    if (category) {
+      filter.category = category;
+    }
+    
+    if (isPublished !== undefined) {
+      filter.isPublished = isPublished === 'true';
+    }
+    
+    // Text search in title and content
+    if (search) {
+      filter.$text = { $search: search };
+    }
+    
+    const skip = (page - 1) * limit;
+    
+    const [news, total] = await Promise.all([
+      News.find(filter)
+        .sort({ publishedAt: -1 })
+        .skip(skip)
+        .limit(parseInt(limit)),
+      News.countDocuments(filter)
+    ]);
+    
+    res.json({
+      success: true,
+      data: news,
+      pagination: {
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(total / limit),
+        totalItems: total,
+        itemsPerPage: parseInt(limit)
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+})
+
+// Get news by ID
+app.get('/news/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const news = await News.findById(id);
+    
+    if (!news) {
+      return res.status(404).json({ error: 'News not found' });
+    }
+    
+    // Increment views
+    news.views += 1;
+    await news.save();
+    
+    res.json({
+      success: true,
+      data: news
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+})
+
+// Create new news
+app.post('/news', async (req, res) => {
+  try {
+    const { title, subtitle, content, summary, image, category, author, tags, publishedAt } = req.body;
+    
+    // Validate required fields
+    if (!title || !content || !summary || !image || !category || !author) {
+      return res.status(400).json({ 
+        error: 'Title, content, summary, image, category, and author are required' 
+      });
+    }
+    
+    const news = new News({
+      title,
+      subtitle,
+      content,
+      summary,
+      image,
+      category,
+      author,
+      tags: tags || [],
+      publishedAt: publishedAt || new Date()
+    });
+    
+    await news.save();
+    
+    res.status(201).json({
+      success: true,
+      data: news
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+})
+
+// Update news
+app.put('/news/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+    
+    const news = await News.findByIdAndUpdate(
+      id,
+      updates,
+      { new: true, runValidators: true }
+    );
+    
+    if (!news) {
+      return res.status(404).json({ error: 'News not found' });
+    }
+    
+    res.json({
+      success: true,
+      data: news
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+})
+
+// Toggle news published status
+app.patch('/news/:id/toggle-published', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const news = await News.findById(id);
+    
+    if (!news) {
+      return res.status(404).json({ error: 'News not found' });
+    }
+    
+    news.isPublished = !news.isPublished;
+    await news.save();
+    
+    res.json({
+      success: true,
+      data: news
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+})
+
+// Like news
+app.patch('/news/:id/like', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const news = await News.findByIdAndUpdate(
+      id,
+      { $inc: { likes: 1 } },
+      { new: true }
+    );
+    
+    if (!news) {
+      return res.status(404).json({ error: 'News not found' });
+    }
+    
+    res.json({
+      success: true,
+      data: {
+        newsId: news._id,
+        likes: news.likes
+      }
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+})
+
+// Get news by category
+app.get('/news/category/:category', async (req, res) => {
+  try {
+    const { category } = req.params;
+    const { page = 1, limit = 10 } = req.query;
+    
+    const skip = (page - 1) * limit;
+    
+    const [news, total] = await Promise.all([
+      News.find({ category, isPublished: true })
+        .sort({ publishedAt: -1 })
+        .skip(skip)
+        .limit(parseInt(limit)),
+      News.countDocuments({ category, isPublished: true })
+    ]);
+    
+    res.json({
+      success: true,
+      data: news,
+      pagination: {
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(total / limit),
+        totalItems: total,
+        itemsPerPage: parseInt(limit)
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+})
+
+// Get trending news (most viewed)
+app.get('/news/trending/top', async (req, res) => {
+  try {
+    const { limit = 5 } = req.query;
+    
+    const news = await News.find({ isPublished: true })
+      .sort({ views: -1, publishedAt: -1 })
+      .limit(parseInt(limit));
+    
+    res.json({
+      success: true,
+      data: news
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+})
+
+// Delete news
+app.delete('/news/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const news = await News.findByIdAndDelete(id);
+    
+    if (!news) {
+      return res.status(404).json({ error: 'News not found' });
+    }
+    
+    res.json({
+      success: true,
+      message: 'News deleted successfully'
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
