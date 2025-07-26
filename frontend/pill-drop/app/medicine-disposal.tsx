@@ -1,8 +1,7 @@
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { router } from 'expo-router';
 import React from 'react';
-import { Pressable, ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 
 const medicineTypes = [
   {
@@ -62,20 +61,8 @@ const medicineTypes = [
 ];
 
 export default function MedicineDisposalScreen() {
-  const handleGoBack = () => {
-    router.back();
-  };
-
   return (
     <ThemedView style={styles.container}>
-      <ThemedView style={styles.header}>
-        <Pressable onPress={handleGoBack} style={styles.backButton}>
-          <ThemedText style={styles.backButtonText}>← 뒤로</ThemedText>
-        </Pressable>
-        <ThemedText style={styles.headerTitle}>폐의약품 분리배출 가이드</ThemedText>
-        <ThemedView style={styles.headerSpacer} />
-      </ThemedView>
-
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <ThemedView style={styles.content}>
           <ThemedText style={styles.subtitle}>
@@ -121,33 +108,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8f9fa',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingTop: 50,
-    paddingBottom: 15,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e9ecef',
-  },
-  backButton: {
-    padding: 8,
-  },
-  backButtonText: {
-    fontSize: 16,
-    color: '#007AFF',
-    fontWeight: '600',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#2c3e50',
-  },
-  headerSpacer: {
-    width: 60,
   },
   scrollView: {
     flex: 1,

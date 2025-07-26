@@ -30,7 +30,7 @@ export default {
         {
           "image": "./assets/images/logo.png",
           "imageWidth": 300,
-          "resizeMode": "contain",
+          "contentFit": "contain",
           "backgroundColor": "#ffffff"
         }
       ]

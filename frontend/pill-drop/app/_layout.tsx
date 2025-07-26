@@ -25,6 +25,20 @@ export default function RootLayout() {
         <Stack.Screen name="login" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="map" options={{ headerShown: false }} />
+        <Stack.Screen 
+          name="medicine-disposal" 
+          options={{ 
+            title: '폐의약품 분리배출 가이드',
+            headerBackTitle: '뒤로'
+          }} 
+        />
+        <Stack.Screen 
+          name="point-store" 
+          options={{ 
+            title: '포인트 상점',
+            headerBackTitle: '뒤로'
+          }} 
+        />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

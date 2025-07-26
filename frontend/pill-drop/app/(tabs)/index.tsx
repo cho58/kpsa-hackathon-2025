@@ -70,10 +70,8 @@ export default function HomeScreen() {
             <Image
               source={require('@/assets/images/logo.png')}
               style={styles.logo}
+              contentFit="contain"
             />
-          </ThemedView>
-          <ThemedView style={styles.pointSection}>
-            <ThemedText style={styles.pointValue}>P {points.toLocaleString()}</ThemedText>
           </ThemedView>
         </ThemedView>
       }>
@@ -83,6 +81,7 @@ export default function HomeScreen() {
             <Image
               source={require('@/assets/images/Icons/Main/map.png')}
               style={styles.mapBackgroundImage}
+              contentFit="contain"
             />
             <ThemedText type="subtitle" style={styles.subtitleText}>내 주변 폐의약품 수거함</ThemedText>
             <Pressable onPress={handleLocationSearch}>
@@ -97,6 +96,7 @@ export default function HomeScreen() {
               <Image
                 source={require('@/assets/images/Icons/Main/trash.png')}
                 style={styles.actionBackgroundImage}
+                contentFit="contain"
               />
               <ThemedText type="subtitle" style={styles.actionSubtitleText}>폐의약품{'\n'}분리배출</ThemedText>
             </ThemedView>
@@ -106,6 +106,7 @@ export default function HomeScreen() {
               <Image
                 source={require('@/assets/images/Icons/Main/gift.png')}
                 style={styles.actionBackgroundImage}
+                contentFit="contain"
               />
               <ThemedText type="subtitle" style={styles.actionSubtitleText}>포인트 상점</ThemedText>
             </ThemedView>
@@ -152,6 +153,7 @@ export default function HomeScreen() {
                     styles.pillImage,
                     index < completedStamps && styles.completedPillImage
                   ]}
+                  contentFit="contain"
                 />
               </ThemedView>
             ))}
@@ -283,7 +285,6 @@ const styles = StyleSheet.create({
     right: 8,
     width: 60,
     height: 60,
-    tintColor: '#35C8BA',
   },
   stepContentOverlay: {
     gap: 8,
@@ -333,15 +334,14 @@ const styles = StyleSheet.create({
     flex: 1,
     position: 'relative',
     overflow: 'hidden',
-    minHeight: 100,
+    height: 120,
   },
   actionBackgroundImage: {
     position: 'absolute',
     bottom: 8,
     right: 8,
-    width: 40,
-    height: 40,
-    tintColor: '#35C8BA',
+    width: 50,
+    height: 50,
   },
   actionContentOverlay: {
     gap: 8,
@@ -350,8 +350,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderColor: '#cccccc',
     padding: 16,
-    height: '100%',
-    justifyContent: 'center',
+    height: 120,
+    justifyContent: 'flex-start',
     position: 'relative',
   },
   actionSubtitleText: {
@@ -481,22 +481,20 @@ const styles = StyleSheet.create({
   stampSlot: {
     width: 40,
     height: 40,
-    borderRadius: 30,
+    borderRadius: 20,
     borderWidth: 2,
     borderColor: '#e0e0e0',
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#ffffff',
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
   },
   pillImage: {
-    width: 32,
-    height: 32,
-    position: 'absolute',
-    tintColor: '#cccccc',
+    width: 28,
+    height: 28,
   },
   completedPillImage: {
-    tintColor: '#ffffff',
+    opacity: 1,
   },
   stampProgress: {
     fontSize: 14,

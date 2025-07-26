@@ -65,7 +65,7 @@ export default function GuideScreen() {
       {/* 가이드 콘텐츠 */}
       <View style={styles.content}>
         <View style={styles.imageContainer}>
-          <Image source={currentGuide.image} style={styles.guideImage} />
+          <Image source={currentGuide.image} style={styles.guideImage} contentFit="contain" />
         </View>
         
         <View style={styles.textContainer}>
@@ -139,13 +139,12 @@ const styles = StyleSheet.create({
   guideImage: {
     width: 100,
     height: 100,
-    tintColor: '#35C8BA',
   },
   textContainer: {
     alignItems: 'center',
   },
   title: {
-    fontSize: 28,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#2c3e50',
     marginBottom: 16,

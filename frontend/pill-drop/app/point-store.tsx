@@ -1,8 +1,7 @@
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { router } from 'expo-router';
 import React from 'react';
-import { Pressable, ScrollView, StyleSheet } from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet } from 'react-native';
 
 const storeItems = [
   {
@@ -56,10 +55,6 @@ const storeItems = [
 ];
 
 export default function PointStoreScreen() {
-  const handleBack = () => {
-    router.back();
-  };
-
   const handlePurchase = (item: typeof storeItems[0]) => {
     // 포인트 구매 로직 (실제로는 서버 연동 필요)
     alert(`${item.name}을(를) ${item.points} 포인트로 구매하시겠습니까?`);
@@ -67,14 +62,6 @@ export default function PointStoreScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedView style={styles.header}>
-        <Pressable onPress={handleBack} style={styles.backButton}>
-          <ThemedText style={styles.backButtonText}>← 뒤로</ThemedText>
-        </Pressable>
-        <ThemedText style={styles.headerTitle}>포인트 상점</ThemedText>
-        <ThemedView style={styles.placeholder} />
-      </ThemedView>
-
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <ThemedView style={styles.infoSection}>
           <ThemedText style={styles.infoTitle}>🎁 포인트로 다양한 혜택을 받으세요!</ThemedText>
@@ -122,31 +109,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8f9fa',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingTop: 60,
-    paddingBottom: 20,
-    backgroundColor: '#35C8BA',
-  },
-  backButton: {
-    padding: 8,
-  },
-  backButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  headerTitle: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  placeholder: {
-    width: 60,
   },
   scrollView: {
     flex: 1,
