@@ -70,10 +70,8 @@ export default function HomeScreen() {
             <Image
               source={require('@/assets/images/logo.png')}
               style={styles.logo}
+              contentFit="contain"
             />
-          </ThemedView>
-          <ThemedView style={styles.pointSection}>
-            <ThemedText style={styles.pointValue}>P {points.toLocaleString()}</ThemedText>
           </ThemedView>
         </ThemedView>
       }>
@@ -83,6 +81,7 @@ export default function HomeScreen() {
             <Image
               source={require('@/assets/images/Icons/Main/map.png')}
               style={styles.mapBackgroundImage}
+              contentFit="contain"
             />
             <ThemedText type="subtitle" style={styles.subtitleText}>내 주변 폐의약품 수거함</ThemedText>
             <Pressable onPress={handleLocationSearch}>
@@ -97,6 +96,7 @@ export default function HomeScreen() {
               <Image
                 source={require('@/assets/images/Icons/Main/trash.png')}
                 style={styles.actionBackgroundImage}
+                contentFit="contain"
               />
               <ThemedText type="subtitle" style={styles.actionSubtitleText}>폐의약품{'\n'}분리배출</ThemedText>
             </ThemedView>
@@ -106,6 +106,7 @@ export default function HomeScreen() {
               <Image
                 source={require('@/assets/images/Icons/Main/gift.png')}
                 style={styles.actionBackgroundImage}
+                contentFit="contain"
               />
               <ThemedText type="subtitle" style={styles.actionSubtitleText}>포인트 상점</ThemedText>
             </ThemedView>
@@ -130,6 +131,9 @@ export default function HomeScreen() {
                     ]} 
                   />
                 </ThemedView>
+                <ThemedView style={styles.pointDisplay}>
+                  <ThemedText style={styles.pointText}>{points}P</ThemedText>
+                </ThemedView>
               </ThemedView>
             </ThemedView>
           </ThemedView>
@@ -142,10 +146,18 @@ export default function HomeScreen() {
                   index < completedStamps && styles.completedStamp
                 ]}
               >
-                <ThemedText style={styles.stampNumber}>{index + 1}</ThemedText>
-                {index < completedStamps && (
-                  <ThemedText style={styles.stampIcon}>✓</ThemedText>
-                )}
+                <Image
+                  source={
+                    index < completedStamps 
+                      ? require('@/assets/images/Icons/Main/pill_A.png')
+                      : require('@/assets/images/Icons/Main/pill_I.png')
+                  }
+                  style={[
+                    styles.pillImage,
+                    index < completedStamps && styles.completedPillImage
+                  ]}
+                  contentFit="contain"
+                />
               </ThemedView>
             ))}
             <Pressable 
@@ -178,25 +190,47 @@ export default function HomeScreen() {
           contentContainerStyle={styles.scrollContent}
         >
           <ThemedView style={styles.tipItem}>
+            <Image
+              source={require('@/assets/images/news/news_01.png')}
+              style={styles.tipImage}
+              contentFit="cover"
+            />
+            <ThemedText type="defaultSemiBold" style={styles.tipNumber}>01</ThemedText>
+            <ThemedText type="defaultSemiBold" style={styles.tipText}>
+              폐의약품 올바른 분리배출로 환경보호 실천하기
+            </ThemedText>
+          </ThemedView>
+          <ThemedView style={styles.tipItem}>
+            <Image
+              source={require('@/assets/images/news/news_02.png')}
+              style={styles.tipImage}
+              contentFit="cover"
+            />
+            <ThemedText type="defaultSemiBold" style={styles.tipNumber}>02</ThemedText>
+            <ThemedText type="defaultSemiBold" style={styles.tipText}>
+              의약품 수거함 이용으로 토양 오염 방지 효과 증명
+            </ThemedText>
+          </ThemedView>
+          <ThemedView style={styles.tipItem}>
+            <Image
+              source={require('@/assets/images/news/news_03.png')}
+              style={styles.tipImage}
+              contentFit="cover"
+            />
+            <ThemedText type="defaultSemiBold" style={styles.tipNumber}>03</ThemedText>
+            <ThemedText type="defaultSemiBold" style={styles.tipText}>
+              재활용 포장재 사용으로 탄소 발자국 30% 감소
+            </ThemedText>
+          </ThemedView>
+          <ThemedView style={styles.tipItem}>
+            <Image
+              source={require('@/assets/images/news/news_04.png')}
+              style={styles.tipImage}
+              contentFit="cover"
+            />
             <ThemedText type="defaultSemiBold" style={styles.tipNumber}>04</ThemedText>
             <ThemedText type="defaultSemiBold" style={styles.tipText}>
-              생분해 비닐 사용 시 환경오염 5% 감소 효과!
-            </ThemedText>
-          </ThemedView>
-          <ThemedView style={styles.tipItem}>
-            <ThemedText type="defaultSemiBold" style={styles.tipNumber}>05</ThemedText>
-            <ThemedText type="defaultSemiBold" style={styles.tipText}>
-              폐의약품 안전 처리로 토양 오염 방지!
-            </ThemedText>
-          </ThemedView>
-          <ThemedView style={styles.tipItem}>
-            <ThemedText type="defaultSemiBold" style={styles.tipText}>
-              재활용 포장재 사용으로 탄소 발자국 감소!
-            </ThemedText>
-          </ThemedView>
-          <ThemedView style={styles.tipItem}>
-            <ThemedText type="defaultSemiBold" style={styles.tipText}>
-              올바른 의약품 분리배출로 수질 보호!
+              스마트 수거함 도입으로 처리 효율성 향상
             </ThemedText>
           </ThemedView>
         </ScrollView>
@@ -276,7 +310,6 @@ const styles = StyleSheet.create({
     right: 8,
     width: 60,
     height: 60,
-    tintColor: '#35C8BA',
   },
   stepContentOverlay: {
     gap: 8,
@@ -326,15 +359,14 @@ const styles = StyleSheet.create({
     flex: 1,
     position: 'relative',
     overflow: 'hidden',
-    minHeight: 100,
+    height: 120,
   },
   actionBackgroundImage: {
     position: 'absolute',
     bottom: 8,
     right: 8,
-    width: 40,
-    height: 40,
-    tintColor: '#35C8BA',
+    width: 50,
+    height: 50,
   },
   actionContentOverlay: {
     gap: 8,
@@ -343,8 +375,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderColor: '#cccccc',
     padding: 16,
-    height: '100%',
-    justifyContent: 'center',
+    height: 120,
+    justifyContent: 'flex-start',
     position: 'relative',
   },
   actionSubtitleText: {
@@ -408,6 +440,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#35C8BA',
     borderRadius: 4,
   },
+  pointDisplay: {
+    backgroundColor: '#35C8BA',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginLeft: 8,
+  },
+  pointText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
   certificationButton: {
     backgroundColor: '#35C8BA',
     paddingHorizontal: 16,
@@ -451,17 +495,31 @@ const styles = StyleSheet.create({
     minWidth: 160,
     minHeight: 150,
     justifyContent: 'flex-end',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  tipImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
+    opacity: 0.3,
   },
   tipNumber: {
     fontSize: 16,
     color: '#35C8BA',
     textAlign: 'left',
+    zIndex: 1,
   },
   tipText: {
     fontSize: 17,
     color: '#fff',
     textAlign: 'left',
     maxWidth: 200,
+    zIndex: 1,
   },
   stampGrid: {
     padding: 16,
@@ -474,24 +532,20 @@ const styles = StyleSheet.create({
   stampSlot: {
     width: 40,
     height: 40,
-    borderRadius: 30,
+    borderRadius: 20,
     borderWidth: 2,
     borderColor: '#e0e0e0',
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#ffffff',
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
   },
-  stampNumber: {
-    fontSize: 12,
-    color: '#666',
-    fontWeight: '500',
+  pillImage: {
+    width: 28,
+    height: 28,
   },
-  stampIcon: {
-    fontSize: 24,
-    color: '#4CAF50',
-    fontWeight: 'bold',
-    position: 'absolute',
+  completedPillImage: {
+    opacity: 1,
   },
   stampProgress: {
     fontSize: 14,

@@ -27,6 +27,7 @@ export default function LoginScreen() {
         <Image
           source={require('@/assets/images/logo.png')}
           style={styles.logoImage}
+          contentFit="contain"
         />
         <ThemedText style={styles.subtitle}>폐의약품 안전 수거 서비스</ThemedText>
       </ThemedView>

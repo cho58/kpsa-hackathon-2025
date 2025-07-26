@@ -1,65 +1,45 @@
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { router } from 'expo-router';
+import { Image } from 'expo-image';
 import React from 'react';
 import { Pressable, ScrollView, StyleSheet } from 'react-native';
 
 const storeItems = [
   {
     id: 1,
-    name: '아메리카노 쿠폰',
+    name: '멸균 주사침',
     points: 200,
-    description: '스타벅스/이디야 아메리카노 쿠폰',
-    icon: '☕',
-    category: 'beverage'
+    description: '일회용 멸균 주사침 (21G, 10개입)',
+    icon: require('@/assets/images/gift/gift_01.png'),
+    category: 'medical'
   },
   {
     id: 2,
-    name: '편의점 1000원 쿠폰',
+    name: '멸균 채혈침',
     points: 150,
-    description: 'GS25/CU/세븐일레븐 1000원 할인',
-    icon: '🏪',
-    category: 'discount'
+    description: '당뇨 혈당측정용 멸균 채혈침 (30G)',
+    icon: require('@/assets/images/gift/gift_02.png'),
+    category: 'medical'
   },
   {
     id: 3,
-    name: '치킨 3000원 쿠폰',
+    name: '알콜 스왑',
     points: 500,
-    description: '교촌치킨/굽네치킨 3000원 할인',
-    icon: '🍗',
-    category: 'food'
+    description: '소독용 알콜 스왑 패드 (70% 알콜, 100매)',
+    icon: require('@/assets/images/gift/gift_03.png'),
+    category: 'hygiene'
   },
   {
     id: 4,
-    name: '배달앱 2000원 쿠폰',
+    name: '의료용 장갑',
     points: 300,
-    description: '배달의민족/요기요 2000원 할인',
-    icon: '🚚',
-    category: 'delivery'
+    description: '일회용 니트릴 의료용 장갑 (M사이즈, 50매)',
+    icon: require('@/assets/images/gift/gift_04.png'),
+    category: 'protective'
   },
-  {
-    id: 5,
-    name: '영화관람권',
-    points: 800,
-    description: 'CGV/롯데시네마 영화관람권',
-    icon: '🎬',
-    category: 'entertainment'
-  },
-  {
-    id: 6,
-    name: '기부하기 (유니세프)',
-    points: 100,
-    description: '100포인트로 취약계층 아동 지원',
-    icon: '❤️',
-    category: 'donation'
-  }
 ];
 
 export default function PointStoreScreen() {
-  const handleBack = () => {
-    router.back();
-  };
-
   const handlePurchase = (item: typeof storeItems[0]) => {
     // 포인트 구매 로직 (실제로는 서버 연동 필요)
     alert(`${item.name}을(를) ${item.points} 포인트로 구매하시겠습니까?`);
@@ -67,14 +47,6 @@ export default function PointStoreScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedView style={styles.header}>
-        <Pressable onPress={handleBack} style={styles.backButton}>
-          <ThemedText style={styles.backButtonText}>← 뒤로</ThemedText>
-        </Pressable>
-        <ThemedText style={styles.headerTitle}>포인트 상점</ThemedText>
-        <ThemedView style={styles.placeholder} />
-      </ThemedView>
-
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <ThemedView style={styles.infoSection}>
           <ThemedText style={styles.infoTitle}>🎁 포인트로 다양한 혜택을 받으세요!</ThemedText>
@@ -87,7 +59,11 @@ export default function PointStoreScreen() {
           {storeItems.map((item) => (
             <ThemedView key={item.id} style={styles.itemCard}>
               <ThemedView style={styles.itemHeader}>
-                <ThemedText style={styles.itemIcon}>{item.icon}</ThemedText>
+                <Image 
+                  source={item.icon} 
+                  style={styles.itemIcon} 
+                  contentFit="contain"
+                />
                 <ThemedView style={styles.itemInfo}>
                   <ThemedText style={styles.itemName}>{item.name}</ThemedText>
                   <ThemedText style={styles.itemDescription}>{item.description}</ThemedText>
@@ -122,31 +98,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8f9fa',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingTop: 60,
-    paddingBottom: 20,
-    backgroundColor: '#35C8BA',
-  },
-  backButton: {
-    padding: 8,
-  },
-  backButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  headerTitle: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  placeholder: {
-    width: 60,
   },
   scrollView: {
     flex: 1,
@@ -194,7 +145,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   itemIcon: {
-    fontSize: 32,
+    width: 48,
+    height: 48,
     marginRight: 12,
   },
   itemInfo: {

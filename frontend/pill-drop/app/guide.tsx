@@ -10,27 +10,27 @@ const guideData = [
   {
     title: "폐의약품 안전 처리",
     description: "사용하지 않는 의약품을\n안전하게 처리하세요",
-    image: require('@/assets/images/Icons/Main/pill_A.png'),
+    image: require('@/assets/images/Icons/App_info/pill.png'),
   },
   {
     title: "수거함 위치 찾기",
     description: "내 주변 폐의약품 수거함을\n쉽게 찾을 수 있어요",
-    image: require('@/assets/images/Icons/Main/map.png'),
-  },
-  {
-    title: "분리배출 가이드",
-    description: "올바른 분리배출 방법을\n자세히 알려드려요",
-    image: require('@/assets/images/Icons/Main/trash.png'),
+    image: require('@/assets/images/Icons/App_info/map.png'),
   },
   {
     title: "포인트 적립",
     description: "인증하고 포인트를 모아\n다양한 혜택을 받으세요",
-    image: require('@/assets/images/Icons/Main/gift.png'),
+    image: require('@/assets/images/Icons/App_info/gift.png'),
+  },
+  {
+    title: "분리배출 가이드",
+    description: "올바른 분리배출 방법을\n자세히 알려드려요",
+    image: require('@/assets/images/Icons/App_info/news.png'),
   },
   {
     title: "환경 보호",
     description: "올바른 의약품 처리로\n깨끗한 환경을 만들어요",
-    image: require('@/assets/images/Icons/Main/pill_I.png'),
+    image: require('@/assets/images/Icons/App_info/earth.png'),
   },
 ];
 
@@ -65,7 +65,14 @@ export default function GuideScreen() {
       {/* 가이드 콘텐츠 */}
       <View style={styles.content}>
         <View style={styles.imageContainer}>
-          <Image source={currentGuide.image} style={styles.guideImage} />
+          <Image 
+            key={currentStep}
+            source={currentGuide.image} 
+            style={styles.guideImage} 
+            contentFit="contain"
+            cachePolicy="memory-disk"
+            transition={200}
+          />
         </View>
         
         <View style={styles.textContainer}>
@@ -139,13 +146,12 @@ const styles = StyleSheet.create({
   guideImage: {
     width: 100,
     height: 100,
-    tintColor: '#35C8BA',
   },
   textContainer: {
     alignItems: 'center',
   },
   title: {
-    fontSize: 28,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#2c3e50',
     marginBottom: 16,

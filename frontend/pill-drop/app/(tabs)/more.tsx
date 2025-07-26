@@ -1,7 +1,7 @@
-import React from 'react';
-import { ScrollView, StyleSheet, Pressable, Alert } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import React from 'react';
+import { Alert, Pressable, ScrollView, StyleSheet } from 'react-native';
 
 export default function MoreScreen() {
   const handleOneOnOneInquiry = () => {
@@ -85,11 +85,11 @@ export default function MoreScreen() {
           <ThemedView style={styles.rewardList}>
             <ThemedView style={styles.rewardItem}>
               <ThemedText style={styles.rewardIcon}>☕</ThemedText>
-              <ThemedText style={styles.rewardText}>아메리카노 쿠폰 x2</ThemedText>
+              <ThemedText style={styles.rewardText}>멸균 주사침 x2</ThemedText>
             </ThemedView>
             <ThemedView style={styles.rewardItem}>
               <ThemedText style={styles.rewardIcon}>🏪</ThemedText>
-              <ThemedText style={styles.rewardText}>편의점 쿠폰 x3</ThemedText>
+              <ThemedText style={styles.rewardText}>알콜 스왑 x3</ThemedText>
             </ThemedView>
           </ThemedView>
         </ThemedView>
