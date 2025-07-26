@@ -68,31 +68,47 @@ export default function HomeScreen() {
         <ThemedView style={styles.headerContainer}>
           <ThemedView style={styles.logoSection}>
             <Image
-              source={require('@/assets/images/partial-react-logo.png')}
+              source={require('@/assets/images/logo.png')}
               style={styles.logo}
             />
-            <ThemedText style={styles.appName}>버려요약</ThemedText>
           </ThemedView>
           <ThemedView style={styles.pointSection}>
             <ThemedText style={styles.pointValue}>P {points.toLocaleString()}</ThemedText>
           </ThemedView>
         </ThemedView>
       }>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">내 주변 폐의약품 수거함</ThemedText>
-        <Pressable onPress={handleLocationSearch} style={styles.locationButton}>
-          <ThemedText style={styles.locationButtonText}>위치 찾기</ThemedText>
-        </Pressable>
-      </ThemedView>
-      
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">주요 서비스</ThemedText>
+      <ThemedView style={styles.buttonContainer}>
+        <ThemedView style={styles.stepContainerWithMap}>
+          <ThemedView style={styles.stepContentOverlay}>
+            <Image
+              source={require('@/assets/images/Icons/Main/map.png')}
+              style={styles.mapBackgroundImage}
+            />
+            <ThemedText type="subtitle" style={styles.subtitleText}>내 주변 폐의약품 수거함</ThemedText>
+            <Pressable onPress={handleLocationSearch}>
+              <ThemedText style={styles.locationLabelText}>위치 찾기 {'>'}</ThemedText>
+            </Pressable>
+          </ThemedView>
+        </ThemedView>
+        
         <ThemedView style={styles.actionButtonsContainer}>
-          <Pressable onPress={handleMedicineDisposal} style={styles.actionButton}>
-            <ThemedText style={styles.actionButtonText}>폐의약품 분리배출</ThemedText>
+          <Pressable style={styles.actionCard} onPress={handleMedicineDisposal}>
+            <ThemedView style={styles.actionContentOverlay}>
+              <Image
+                source={require('@/assets/images/Icons/Main/trash.png')}
+                style={styles.actionBackgroundImage}
+              />
+              <ThemedText type="subtitle" style={styles.actionSubtitleText}>폐의약품{'\n'}분리배출</ThemedText>
+            </ThemedView>
           </Pressable>
-          <Pressable onPress={handlePointStore} style={styles.actionButton}>
-            <ThemedText style={styles.actionButtonText}>포인트 상점</ThemedText>
+          <Pressable style={styles.actionCard} onPress={handlePointStore}>
+            <ThemedView style={styles.actionContentOverlay}>
+              <Image
+                source={require('@/assets/images/Icons/Main/gift.png')}
+                style={styles.actionBackgroundImage}
+              />
+              <ThemedText type="subtitle" style={styles.actionSubtitleText}>포인트 상점</ThemedText>
+            </ThemedView>
           </Pressable>
         </ThemedView>
       </ThemedView>
@@ -115,10 +131,6 @@ export default function HomeScreen() {
                   />
                 </ThemedView>
               </ThemedView>
-            </ThemedView>
-            <ThemedView style={styles.pointDisplay}>
-              <ThemedText style={styles.pointLabel}>보유 포인트</ThemedText>
-              <ThemedText style={styles.pointAmount}>P {points.toLocaleString()}</ThemedText>
             </ThemedView>
           </ThemedView>
           <ThemedView style={styles.stampGrid}>
@@ -209,8 +221,8 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   logo: {
-    height: 40,
-    width: 40,
+    height: 30,
+    width: 140,
     borderRadius: 8,
   },
   appName: {
@@ -236,11 +248,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
   },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
   stepContainer: {
     backgroundColor: '#eeeeee',
     gap: 8,
@@ -248,6 +255,39 @@ const styles = StyleSheet.create({
     marginHorizontal: -32,
     paddingHorizontal: 32,
     paddingVertical: 16,
+  },
+  buttonContainer: {
+    backgroundColor: '#ffffff',
+    gap: 12,
+    marginBottom: -16,
+    marginHorizontal: -32,
+    paddingHorizontal: 32,
+    paddingVertical: 16,
+  },
+  stepContainerWithMap: {
+    backgroundColor: 'transparent',
+    gap: 8,
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  mapBackgroundImage: {
+    position: 'absolute',
+    bottom: 8,
+    right: 8,
+    width: 60,
+    height: 60,
+    tintColor: '#35C8BA',
+  },
+  stepContentOverlay: {
+    gap: 8,
+    zIndex: 1,
+    borderWidth: 1,
+    borderRadius: 8,
+    borderColor: '#cccccc',
+    padding: 16,  
+  },
+  subtitleText: {
+    backgroundColor: 'transparent',
   },
   lastStepContainer: {
     backgroundColor: '#eeeeee',
@@ -271,22 +311,58 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '600',
   },
+  locationLabelText: {
+    color: '#007AFF',
+    fontSize: 14,
+    fontWeight: '500',
+  },
   actionButtonsContainer: {
     flexDirection: 'row',
     gap: 12,
+    marginTop: 8,
+  },
+  actionCard: {
+    backgroundColor: '#ffffff',
+    flex: 1,
+    position: 'relative',
+    overflow: 'hidden',
+    minHeight: 100,
+  },
+  actionBackgroundImage: {
+    position: 'absolute',
+    bottom: 8,
+    right: 8,
+    width: 40,
+    height: 40,
+    tintColor: '#35C8BA',
+  },
+  actionContentOverlay: {
+    gap: 8,
+    zIndex: 1,
+    borderWidth: 1,
+    borderRadius: 8,
+    borderColor: '#cccccc',
+    padding: 16,
+    height: '100%',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  actionSubtitleText: {
+    backgroundColor: 'transparent',
+    fontSize: 16,
+    fontWeight: '600',
   },
   actionButton: {
     backgroundColor: '#35C8BA',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 8,
-    flex: 1,
-    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 6,
+    alignSelf: 'flex-start',
   },
   actionButtonText: {
     color: 'white',
     fontWeight: '600',
-    fontSize: 14,
+    fontSize: 12,
   },
   stampContainer: {
     backgroundColor: 'white',
@@ -331,25 +407,6 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: '#35C8BA',
     borderRadius: 4,
-  },
-  pointDisplay: {
-    alignItems: 'flex-end',
-    backgroundColor: '#F8F9FA',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-  },
-  pointLabel: {
-    fontSize: 12,
-    color: '#666666',
-    marginBottom: 2,
-  },
-  pointAmount: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#35C8BA',
   },
   certificationButton: {
     backgroundColor: '#35C8BA',

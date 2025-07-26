@@ -1,5 +1,6 @@
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import React from 'react';
 import { Pressable, StyleSheet } from 'react-native';
@@ -23,7 +24,10 @@ export default function LoginScreen() {
   return (
     <ThemedView style={styles.container}>
       <ThemedView style={styles.logoSection}>
-        <ThemedText style={styles.appTitle}>버려요약</ThemedText>
+        <Image
+          source={require('@/assets/images/logo.png')}
+          style={styles.logoImage}
+        />
         <ThemedText style={styles.subtitle}>폐의약품 안전 수거 서비스</ThemedText>
       </ThemedView>
 
@@ -38,6 +42,13 @@ export default function LoginScreen() {
 
         <Pressable style={styles.guestButton} onPress={handleGuestLogin}>
           <ThemedText style={styles.guestButtonText}>비회원으로 입장하기</ThemedText>
+        </Pressable>
+        
+        <Pressable style={styles.serviceAreaLink} onPress={() => {
+          // 서비스 지역 확인 로직
+          alert('서비스 지역 확인 페이지로 이동합니다.');
+        }}>
+          <ThemedText style={styles.serviceAreaText}>서비스 지역 확인하기</ThemedText>
         </Pressable>
       </ThemedView>
     </ThemedView>
@@ -54,10 +65,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 60,
   },
-  appTitle: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 10,
+  logoImage: {
+    width: 200,
+    height: 80,
+    marginBottom: 20,
+    resizeMode: 'contain',
   },
   subtitle: {
     fontSize: 16,
@@ -102,5 +114,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     opacity: 0.8,
+  },
+  serviceAreaLink: {
+    alignItems: 'center',
+    marginTop: 20,
+    paddingVertical: 8,
+  },
+  serviceAreaText: {
+    fontSize: 14,
+    color: '#666666',
+    textDecorationLine: 'underline',
   },
 });
