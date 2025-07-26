@@ -131,6 +131,9 @@ export default function HomeScreen() {
                     ]} 
                   />
                 </ThemedView>
+                <ThemedView style={styles.pointDisplay}>
+                  <ThemedText style={styles.pointText}>{points}P</ThemedText>
+                </ThemedView>
               </ThemedView>
             </ThemedView>
           </ThemedView>
@@ -436,6 +439,18 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: '#35C8BA',
     borderRadius: 4,
+  },
+  pointDisplay: {
+    backgroundColor: '#35C8BA',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginLeft: 8,
+  },
+  pointText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   certificationButton: {
     backgroundColor: '#35C8BA',
