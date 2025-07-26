@@ -142,10 +142,17 @@ export default function HomeScreen() {
                   index < completedStamps && styles.completedStamp
                 ]}
               >
-                <ThemedText style={styles.stampNumber}>{index + 1}</ThemedText>
-                {index < completedStamps && (
-                  <ThemedText style={styles.stampIcon}>✓</ThemedText>
-                )}
+                <Image
+                  source={
+                    index < completedStamps 
+                      ? require('@/assets/images/Icons/Main/pill_A.png')
+                      : require('@/assets/images/Icons/Main/pill_I.png')
+                  }
+                  style={[
+                    styles.pillImage,
+                    index < completedStamps && styles.completedPillImage
+                  ]}
+                />
               </ThemedView>
             ))}
             <Pressable 
@@ -482,16 +489,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
   },
-  stampNumber: {
-    fontSize: 12,
-    color: '#666',
-    fontWeight: '500',
-  },
-  stampIcon: {
-    fontSize: 24,
-    color: '#4CAF50',
-    fontWeight: 'bold',
+  pillImage: {
+    width: 32,
+    height: 32,
     position: 'absolute',
+    tintColor: '#cccccc',
+  },
+  completedPillImage: {
+    tintColor: '#ffffff',
   },
   stampProgress: {
     fontSize: 14,
