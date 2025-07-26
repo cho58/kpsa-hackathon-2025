@@ -1,10 +1,10 @@
 export default {
   "expo": {
-    "name": "pill-drop",
+    "name": "버려요 약",
     "slug": "pill-drop",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/logo.png",
     "scheme": "pilldrop",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,

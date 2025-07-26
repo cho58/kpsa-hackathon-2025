@@ -65,7 +65,14 @@ export default function GuideScreen() {
       {/* 가이드 콘텐츠 */}
       <View style={styles.content}>
         <View style={styles.imageContainer}>
-          <Image source={currentGuide.image} style={styles.guideImage} contentFit="contain" />
+          <Image 
+            key={currentStep}
+            source={currentGuide.image} 
+            style={styles.guideImage} 
+            contentFit="contain"
+            cachePolicy="memory-disk"
+            transition={200}
+          />
         </View>
         
         <View style={styles.textContainer}>

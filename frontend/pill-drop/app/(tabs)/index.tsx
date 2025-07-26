@@ -187,25 +187,47 @@ export default function HomeScreen() {
           contentContainerStyle={styles.scrollContent}
         >
           <ThemedView style={styles.tipItem}>
+            <Image
+              source={require('@/assets/images/news/news_01.png')}
+              style={styles.tipImage}
+              contentFit="cover"
+            />
+            <ThemedText type="defaultSemiBold" style={styles.tipNumber}>01</ThemedText>
+            <ThemedText type="defaultSemiBold" style={styles.tipText}>
+              폐의약품 올바른 분리배출로 환경보호 실천하기
+            </ThemedText>
+          </ThemedView>
+          <ThemedView style={styles.tipItem}>
+            <Image
+              source={require('@/assets/images/news/news_02.png')}
+              style={styles.tipImage}
+              contentFit="cover"
+            />
+            <ThemedText type="defaultSemiBold" style={styles.tipNumber}>02</ThemedText>
+            <ThemedText type="defaultSemiBold" style={styles.tipText}>
+              의약품 수거함 이용으로 토양 오염 방지 효과 증명
+            </ThemedText>
+          </ThemedView>
+          <ThemedView style={styles.tipItem}>
+            <Image
+              source={require('@/assets/images/news/news_03.png')}
+              style={styles.tipImage}
+              contentFit="cover"
+            />
+            <ThemedText type="defaultSemiBold" style={styles.tipNumber}>03</ThemedText>
+            <ThemedText type="defaultSemiBold" style={styles.tipText}>
+              재활용 포장재 사용으로 탄소 발자국 30% 감소
+            </ThemedText>
+          </ThemedView>
+          <ThemedView style={styles.tipItem}>
+            <Image
+              source={require('@/assets/images/news/news_04.png')}
+              style={styles.tipImage}
+              contentFit="cover"
+            />
             <ThemedText type="defaultSemiBold" style={styles.tipNumber}>04</ThemedText>
             <ThemedText type="defaultSemiBold" style={styles.tipText}>
-              생분해 비닐 사용 시 환경오염 5% 감소 효과!
-            </ThemedText>
-          </ThemedView>
-          <ThemedView style={styles.tipItem}>
-            <ThemedText type="defaultSemiBold" style={styles.tipNumber}>05</ThemedText>
-            <ThemedText type="defaultSemiBold" style={styles.tipText}>
-              폐의약품 안전 처리로 토양 오염 방지!
-            </ThemedText>
-          </ThemedView>
-          <ThemedView style={styles.tipItem}>
-            <ThemedText type="defaultSemiBold" style={styles.tipText}>
-              재활용 포장재 사용으로 탄소 발자국 감소!
-            </ThemedText>
-          </ThemedView>
-          <ThemedView style={styles.tipItem}>
-            <ThemedText type="defaultSemiBold" style={styles.tipText}>
-              올바른 의약품 분리배출로 수질 보호!
+              스마트 수거함 도입으로 처리 효율성 향상
             </ThemedText>
           </ThemedView>
         </ScrollView>
@@ -458,17 +480,31 @@ const styles = StyleSheet.create({
     minWidth: 160,
     minHeight: 150,
     justifyContent: 'flex-end',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  tipImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
+    opacity: 0.3,
   },
   tipNumber: {
     fontSize: 16,
     color: '#35C8BA',
     textAlign: 'left',
+    zIndex: 1,
   },
   tipText: {
     fontSize: 17,
     color: '#fff',
     textAlign: 'left',
     maxWidth: 200,
+    zIndex: 1,
   },
   stampGrid: {
     padding: 16,
