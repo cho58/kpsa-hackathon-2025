@@ -1,9 +1,14 @@
-import React, { useState, useRef } from "react";
-import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import React, { useState, useRef, useEffect } from "react";
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 import { WebView } from "react-native-webview";
-import { useNavigation } from "@react-navigation/native";
 import locationData from "../../assets/data/location.json";
-import * as Location from "expo-location";
+import * as ExpoLocation from "expo-location";
 
 // 타입 정의
 type Location = {
@@ -18,6 +23,7 @@ type LocationData = {
 };
 
 const BUTTONS = [
+  { label: "전체", keyword: null }, // 모든 데이터를 표시
   { label: "약국", keyword: "약국" },
   { label: "우체통", keyword: "우체통" },
   { label: "공공기관", keyword: "공공기관" },
@@ -25,10 +31,8 @@ const BUTTONS = [
 ];
 
 export default function KakaoMapScreen() {
-  const navigation = useNavigation();
   const [selected, setSelected] = useState<number>(0);
   const webViewRef = useRef<WebView>(null);
-  const [isWebViewReady, setWebViewReady] = useState(false);
 
   const [currentLocation, setCurrentLocation] = useState<{
     lat: number;
@@ -45,16 +49,31 @@ export default function KakaoMapScreen() {
   } | null>(null);
   const [distance, setDistance] = useState<number>(0);
 
+  const DETAIL_CARD_HEIGHT = 130;
+  const DETAIL_CARD_BOTTOM = 20;
+  const BUTTON_MARGIN = 10;
+  const DEFAULT_BUTTON_BOTTOM = 60;
+
+  useEffect(() => {
+    const all = Object.values(locationData).flat();
+    webViewRef.current?.postMessage(
+      JSON.stringify({
+        type: "locations",
+        payload: all,
+      })
+    );
+  }, []);
+
   // 현위치 버튼 핸들러
   const handleCurrentLocationPress = async () => {
     // 1) 권한 요청
-    const { status } = await Location.requestForegroundPermissionsAsync();
+    const { status } = await ExpoLocation.requestForegroundPermissionsAsync();
     if (status !== "granted") {
       alert("위치 권한이 필요합니다");
       return;
     }
     // 2) 현재 위치 가져오기
-    const loc = await Location.getCurrentPositionAsync({});
+    const loc = await ExpoLocation.getCurrentPositionAsync({});
     const payload = {
       type: "currentLocation",
       lat: loc.coords.latitude,
@@ -64,12 +83,21 @@ export default function KakaoMapScreen() {
     webViewRef.current?.postMessage(JSON.stringify(payload));
   };
 
-  const handleButtonPress = (keyword: string, idx: number) => {
+  // handleButtonPress 수정
+  const handleButtonPress = (keyword: string | null, idx: number) => {
     setSelected(idx);
-    const locations = (locationData as LocationData)[keyword];
-    if (webViewRef.current) {
-      webViewRef.current.postMessage(JSON.stringify(locations));
-    }
+
+    const locations =
+      keyword === null
+        ? Object.values(locationData).flat()
+        : (locationData as LocationData)[keyword];
+
+    webViewRef.current?.postMessage(
+      JSON.stringify({
+        type: "locations", // ← 중요!
+        payload: locations, // ← 마커 데이터
+      })
+    );
   };
 
   const onWebViewMessage = (e: any) => {
@@ -137,73 +165,67 @@ export default function KakaoMapScreen() {
     </head>
     <body>
       <div id="map"></div>
-      <script>
-        kakao.maps.load(function () {
-          var container = document.getElementById('map');
-          var options = {
-            center: new kakao.maps.LatLng(37.364049, 126.718033),
-            level: 3
-          };
+        <script>
+          kakao.maps.load(function() {
+            var map = new kakao.maps.Map(
+              document.getElementById('map'),
+              { center: new kakao.maps.LatLng(37.364049,126.718033), level:3 }
+            );
+            var markers = [];
 
-          // 메시지 수신 핸들러
-          function handleMessage(event) {
-            try {
-              const msg = JSON.parse(event.data);
-              if (msg.type === "currentLocation") {
-                const newCenter = new kakao.maps.LatLng(msg.lat, msg.lng);
-                map.setCenter(newCenter);
+            function clearMarkers() {
+              markers.forEach(function(m){ m.setMap(null); });
+              markers = [];
+            }
+
+            function addMarkers(list) {
+              clearMarkers();
+              list.forEach(function(loc) {
+                var marker = new kakao.maps.Marker({
+                  position: new kakao.maps.LatLng(loc.lat, loc.lng),
+                  map: map
+                });
+                kakao.maps.event.addListener(marker,'click',function(){
+                  window.ReactNativeWebView.postMessage(JSON.stringify({
+                    type: 'markerClick',
+                    name: loc.name,
+                    address: loc.address,
+                    lat: loc.lat,
+                    lng: loc.lng
+                  }));
+                });
+                markers.push(marker);
+              });
+            }
+
+            function onMessage(event) {
+              try {
+                var msg = JSON.parse(event.data);
+
+                // 1) 현위치 요청일 때만 센터 이동
+                if (msg.type === 'currentLocation') {
+                  map.setCenter(new kakao.maps.LatLng(msg.lat,msg.lng));
+                  return;
+                }
+
+                // 2) locations 메시지면 마커만 교체 (절대 센터 변경 없음)
+                if (msg.type === 'locations') {
+                  addMarkers(msg.payload);
+                  return;
+                }
+              } catch (e) {
+                console.error(e);
               }
-              // ... (기존 markerClick, filter 메시지도 처리 가능)
-            } catch (e) {
-              console.error(e);
             }
-          }
 
-          window.addEventListener("message", handleMessage);
-          document.addEventListener("message", handleMessage);
-
-          var map = new kakao.maps.Map(container, options);
-
-          // 마커 추가 함수
-          function addMarkers(locations) {
-            locations.forEach(location => {
-              var marker = new kakao.maps.Marker({
-                position: new kakao.maps.LatLng(location.lat, location.lng),
-                map: map
-              });
-
-              // 마커 클릭 이벤트
-              kakao.maps.event.addListener(marker, 'click', function() {
-                var payload = {
-                  type: "markerClick",
-                  name: location.name,
-                  address: location.address,
-                  lat: location.lat,
-                  lng: location.lng
-                };
-                window.ReactNativeWebView.postMessage(JSON.stringify(payload)); // React Native로 데이터 전달
-              });
-            });
-          }
-
-          // React Native에서 데이터 전달받기
-          document.addEventListener('message', function(event) {
-            var locations = JSON.parse(event.data);
-            if (locations.length > 0) {
-              map.setCenter(new kakao.maps.LatLng(locations[0].lat, locations[0].lng));
-              addMarkers(locations);
-            }
+            // Android/iOS 둘 다 듣기
+            window.addEventListener('message', onMessage);
+            document.addEventListener('message', onMessage);
           });
-        });
-      </script>
-    </body>
+        </script>
+      </body>
     </html>
   `;
-
-  const DETAIL_CARD_HEIGHT = 130;
-  const DETAIL_CARD_BOTTOM = 20;
-  const BUTTON_MARGIN = 10;
-  const DEFAULT_BUTTON_BOTTOM = 60;
 
   return (
     <View style={styles.container}>
@@ -215,7 +237,11 @@ export default function KakaoMapScreen() {
 
       {/* 버튼 컨테이너 */}
       <View style={styles.buttonOverlay}>
-        <View style={styles.buttonContainer}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.buttonContainer}
+        >
           {BUTTONS.map((btn, idx) => (
             <TouchableOpacity
               key={btn.label}
@@ -232,7 +258,7 @@ export default function KakaoMapScreen() {
               </Text>
             </TouchableOpacity>
           ))}
-        </View>
+        </ScrollView>
       </View>
 
       {/* 디테일 카드 */}
@@ -301,27 +327,26 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   buttonOverlay: {
-    position: "absolute", // WebView 위에 겹치도록 설정
+    position: "absolute",
     top: 130, // 헤더 아래로 배치
     left: 0,
     right: 0,
-    paddingHorizontal: 12,
     paddingVertical: 10,
-    backgroundColor: "transparent", // 배경을 투명하게 설정
-    zIndex: 10, // WebView 위에 표시되도록 설정
+    backgroundColor: "transparent",
+    zIndex: 10,
   },
   buttonContainer: {
     flexDirection: "row",
-    justifyContent: "center", // 버튼을 중앙 정렬
     alignItems: "center",
-    gap: 8,
+    paddingHorizontal: 12,
+    gap: 5, // 버튼 간격
   },
   button: {
     backgroundColor: "#fff",
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 7,
-    marginRight: 2,
+    marginRight: 8,
     borderWidth: 1,
     borderColor: "#ddd",
     elevation: 2,
